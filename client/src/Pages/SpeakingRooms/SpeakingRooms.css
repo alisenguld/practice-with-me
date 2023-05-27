@@ -1,0 +1,72 @@
+.srcontainer {
+  width: 60%;
+  overflow: hidden;
+  margin: 100px auto;
+}
+
+.srcontainer-title {
+  font-size: 3rem;
+  padding: 35px;
+  padding-bottom: 3.8rem;
+}
+
+.speaking-rooms {
+  margin: auto;
+  width: 90%;
+  overflow: hidden;
+  display: flex;
+  flex-flow: row wrap;
+  align-content: space-between;
+  justify-content: space-between;
+}
+
+/* Select Option */
+
+.srHeader {
+  display: flex;
+  position: relative;
+}
+
+.srbox {
+  position: absolute;
+  right: 0;
+  margin: 35px 55px 15px 15px;
+}
+
+.srbox select {
+  background-color: #dfab1c;
+  color: white;
+  padding: 15px;
+  width: 250px;
+  border: none;
+  font-size: 24px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+  outline: none;
+  appearance: none;
+  border-radius: 5px;
+}
+
+.srbox::before {
+  content: "∨";
+  font-family: FontAwesome;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20%;
+  height: 100%;
+  text-align: center;
+  font-size: 35px;
+  line-height: 55px;
+  color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+}
+
+.srbox:hover::before {
+  color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.srbox select option {
+  padding: 30px;
+}

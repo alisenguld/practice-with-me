@@ -1,0 +1,122 @@
+.epprofile_container {
+  position: relative;
+  width: 70%;
+  overflow: hidden;
+  margin: 60px auto;
+  border-radius: 50px;
+}
+.epprofile_container video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+
+.eptop_conteiner {
+  font-size: 2rem;
+  padding: 35px;
+  padding-bottom: 3.8rem;
+  text-align: center;
+  font-family: "Josefin Sans";
+}
+
+.epcenter_title {
+  font-size: 2.5rem;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 500;
+}
+
+.epshort_text {
+  font-family: "Open Sans", sans-serif;
+}
+
+.epmid_conteiner {
+  font-size: 2rem;
+  font-family: "Josefin Sans";
+}
+
+.epmid_conteiner_child {
+  width: 33.33%;
+  float: left;
+  padding-left: 50px;
+  padding-bottom: 40px;
+  text-align: left;
+}
+
+.epcenter_object {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.epu_font {
+  font-family: "Open Sans", sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+.epp_font {
+  font-family: "Open Sans", sans-serif;
+  font-size: 1.2rem;
+  word-wrap: break-word;
+  position: relative;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}
+
+.epcss_shadow {
+  width: 50%;
+  height: 50%;
+  border-radius: 50%;
+  border: 2px solid #cddc39;
+  filter: drop-shadow(0 0 8px #ff5722);
+}
+
+.eplittle_title {
+  line-height: 2;
+  font-weight: 600;
+  font-size: large;
+}
+.epinput-field {
+  width: 70%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+  outline: none;
+  margin-bottom: 15px;
+}
+
+.epinput-field:hover {
+  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+.epinput-field:focus {
+  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.2);
+}
+
+form input,
+form button {
+  margin: 10px;
+}
+
+form button {
+  padding: 10px 20px;
+  color: #fff;
+  background-color: #333;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+form button:hover {
+  background-color: #555;
+}

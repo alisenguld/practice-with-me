@@ -1,0 +1,51 @@
+.videocall {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  margin: auto;
+  border-radius: 50px;
+  height: 100%;
+  background: gray;
+}
+
+.userlist {
+  width: 25%;
+  height: 100%;
+  float: left;
+  padding: 20px;
+  padding-bottom: 150px;
+  letter-spacing: 0;
+  text-align: left;
+  background: rgb(11, 204, 230);
+}
+
+.video_track {
+  width: 75%;
+  height: 900px;
+  float: left;
+  padding: 20px;
+  padding-bottom: 150px;
+  letter-spacing: 0;
+  text-align: left;
+  background: yellow;
+}
+
+.user_video {
+  margin: auto;
+  width: 50%;
+  min-width: 1400px;
+  overflow: hidden;
+  display: flex;
+  align-content: space-between;
+  justify-content: space-between;
+  overflow: auto;
+}
+
+.track {
+  position: relative;
+  margin: auto;
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+}
