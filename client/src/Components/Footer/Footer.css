@@ -67,3 +67,10 @@ footer .wave {
     background: url(../../Images/wave.png);
     background-size: 1000px 100px;
 }
+
+@media (max-width: 900px) {
+    footer .wave {
+        height: 150px;
+
+    }
+  }

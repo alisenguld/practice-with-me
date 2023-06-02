@@ -3,6 +3,7 @@ import Card from "../../Components/Card/Card";
 import Footer from "../../Components/Footer/Footer";
 import Background from "../../Images/background.mp4";
 import ref from "../../Images/ref1.png";
+import Popular from "../../Components/Rooms/Popular";
 
 const Home = () => {
   return (
@@ -17,22 +18,7 @@ const Home = () => {
       </div>
       <div className="hcontainer">
         <h3 className="hcontainer-title">Popular Speaking Rooms</h3>
-        <div className="hspeaking-rooms">
-          <Card language="English" level="Any Level" subject="Politic" />
-          <Card language="English" level="Any Level" subject="Politic" />
-          <Card language="English" level="Any Level" subject="Politic" />
-          <Card language="English" level="Any Level" subject="Politic" />
-          <Card language="English" level="Any Level" subject="Politic" />
-          <Card language="English" level="Any Level" subject="Politic" />
-          <Card language="English" level="Any Level" subject="Politic" />
-          <Card language="English" level="Any Level" subject="Politic" />
-          <Card language="English" level="Any Level" subject="Politic" />
-          <Card language="English" level="Any Level" subject="Politic" />
-          <Card language="English" level="Any Level" subject="Politic" />
-          <Card language="English" level="Any Level" subject="Politic" />
-          <Card language="English" level="Any Level" subject="Politic" />
-          <Card language="English" level="Any Level" subject="Politic" />
-        </div>
+          <Popular />
       </div>
       <br />
       <Footer />

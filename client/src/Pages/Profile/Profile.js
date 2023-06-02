@@ -3,18 +3,31 @@ import axios from "axios";
 import "./Profile.css";
 import Footer from "../Footer/Footer";
 import Background from "../../Images/colors.mp4";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Profile = () => {
   const [profileData, setProfileData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  axios.defaults.withCredentials = true;
+
+  const location = useLocation();
+  const path = location.pathname;
+  const pathSegments = path.split("/");
+  let username = pathSegments[2];
+
+  if (username === undefined) {
+    username = "profil";
+  }
 
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const response = await axios.get("http://localhost:8001/profile-data", {
-          withCredentials: true,
-        });
+        const response = await axios.post(
+          "http://localhost:8001/profile-data",
+          {
+            username: username,
+          }
+        );
         const data = response.data;
         setProfileData(data);
         setIsLoading(false);
@@ -42,7 +55,7 @@ const Profile = () => {
           <div className="mid_conteiner_child center_object">
             <img
               className="css_shadow"
-              src={profileData?.image}
+              src={`../../../${profileData?.image}`}
               alt="User Avatar"
             />
           </div>{" "}
@@ -74,8 +87,12 @@ const Profile = () => {
                 <br />
 
                 <p>
-                  Click <Link to="/EditProfile">here</Link> to update your
-                  details
+                  {username === "profil" && (
+                    <>
+                      Click <Link to="/EditProfile">here</Link> to update your
+                      details
+                    </>
+                  )}
                 </p>
               </>
             )}

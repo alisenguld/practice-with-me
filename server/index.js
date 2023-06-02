@@ -8,15 +8,24 @@ const crypto = require("crypto");
 const multer = require("multer");
 const path = require("path");
 const session = require("express-session");
+const http = require("http");
+const socketIo = require("socket.io");
 
 const app = express();
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+    origin: "*", // Tüm origin'lerden gelen isteklere izin ver
+    methods: ["GET", "POST"],
+  },
+});
 
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(express.static("public"));
 
-app.use(express.json()); // for parsing application/json
-app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser());
 app.use(
@@ -38,12 +47,11 @@ app.use(
 const con = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "H*J^sGc67&@HXnx@s2",
+  password: "x",
   database: "proje",
 });
 
 const verifyUser = (req, res, next) => {
-  //next is a middleware
   const token = req.cookies.token;
   if (!token) {
     return res.json({ Message: "we need token please provide it." });
@@ -53,7 +61,7 @@ const verifyUser = (req, res, next) => {
         return res.json({ Message: "Authentication error" });
       } else {
         req.username = decoded.username;
-        next(); // app.get e geri dönmesini sağlıyor
+        next();
       }
     });
   }
@@ -80,7 +88,6 @@ app.post("/register", (req, res) => {
 app.post("/forgot-password", (req, res) => {
   const email = req.body.email;
 
-  // E-posta adresi kontrolü
   con.query(
     "SELECT * FROM users WHERE email = ?",
     [email],
@@ -88,20 +95,16 @@ app.post("/forgot-password", (req, res) => {
       if (error) throw error;
 
       if (results.length === 0) {
-        // Kullanıcı bulunamadı
         return res.send("Kullanıcı bulunamadı.");
       } else {
-        // Rastgele bir şifre oluşturma
         const newPassword = crypto.randomBytes(20).toString("hex");
 
-        // Veritabanında yeni şifrenin kaydedilmesi
         con.query(
           "UPDATE users SET password = ? WHERE email = ?",
           [newPassword, email],
           (error, results) => {
             if (error) throw error;
 
-            // E-posta gönderme
             const transporter = nodemailer.createTransport({
               service: "gmail",
               auth: {
@@ -120,8 +123,7 @@ app.post("/forgot-password", (req, res) => {
             transporter.sendMail(mailOptions, (error, info) => {
               if (error) throw error;
 
-              // E-posta gönderildi
-              res.send("E-posta gönderildi"); // E-posta gönderildiğinde bir yanıt gönderiyoruz
+              res.send("E-posta gönderildi");
             });
           }
         );
@@ -159,8 +161,11 @@ app.put("/update-profile", verifyUser, (req, res) => {
   );
 });
 
-app.get("/profile-data", verifyUser, (req, res) => {
-  const username = req.username;
+app.post("/profile-data", verifyUser, (req, res) => {
+  let username = req.body.username;
+  if (username == "profil") {
+    username = req.username;
+  }
 
   con.query(
     "SELECT name, surname, username, email, image, about from users  WHERE username = ?",
@@ -192,7 +197,6 @@ app.get("/profile-data", verifyUser, (req, res) => {
 app.post("/loginform", (req, res) => {
   const { email, password } = req.body;
 
-  // Kullanıcı adını oturum bilgisine ekleyin
   req.session.username = email;
 
   const sql = "SELECT * FROM users WHERE email = ?";
@@ -282,6 +286,30 @@ app.post("/speaking_room_user", verifyUser, (req, res) => {
     }
   });
 });
+app.post("/speaking_room_user_photo", verifyUser, (req, res) => {
+  let username = req.body.username;
+
+  con.query(
+    "SELECT image from users  WHERE username = ?",
+    [username],
+    (err, results) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send("Veritabanı hatası");
+      } else {
+        if (results.length === 0) {
+          res.status(404).send("Profil bulunamadı");
+        } else {
+          const profileData = {
+            image: results[0].image,
+          };
+
+          res.send(profileData);
+        }
+      }
+    }
+  );
+});
 
 app.post("/speaking_room_leave", verifyUser, (req, res) => {
   const isExist =
@@ -300,22 +328,22 @@ app.post("/speaking_room_leave", verifyUser, (req, res) => {
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "../client/public/images/profile")); // Dosyaların kaydedileceği klasör
+    cb(null, path.join(__dirname, "../client/public/images/profile"));
   },
   filename: function (req, file, cb) {
-    console.log(req.body); // Bu satırı ekledik
-    const ext = path.extname(file.originalname); // Dosya uzantısını alın
-    const username = req.body.username; // Kullanıcı adını alın
-    cb(null, `${username}${ext}`); // Dosya adını geri döndürün
+    console.log(req.body);
+    const ext = path.extname(file.originalname);
+    const username = req.body.username;
+    cb(null, `${username}${ext}`);
   },
 });
 
 const upload = multer({ storage: storage });
 
 app.post("/upload-profile-image", upload.single("profile"), (req, res) => {
-  // Use path.relative() to get the path relative to the project root
   const filepath = "images/profile/" + path.basename(req.file.path);
-  const username = req.body.username; // Kullanıcı adını burada alın.
+  console.log(path.basename(req.file.path));
+  const username = req.body.username;
 
   con.query(
     "UPDATE users SET image = ? WHERE username = ?",
@@ -342,6 +370,18 @@ app.get("/logout", (req, res) => {
   return res.json({ Status: "Success" });
 });
 
-app.listen(8001, () => {
+io.on("connection", (socket) => {
+  console.log("a user connected");
+
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+  });
+
+  socket.on("chat message", (msg) => {
+    io.emit("chat message", msg);
+  });
+});
+
+server.listen(8001, () => {
   console.log("running backend server");
 });

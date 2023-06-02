@@ -24,9 +24,11 @@
 }
 
 .hcontainer {
-  width: 60%;
+  width: 70%;
   overflow: hidden;
-  margin: 500px auto;
+  margin: 450px auto;
+  padding: 50px;
+  margin-bottom: 0px;
 }
 
 .hcontainer-title {
@@ -34,7 +36,7 @@
 }
 
 .hspeaking-rooms {
-  margin: auto;
+  margin: 70px auto;
   width: 90%;
   overflow: hidden;
   display: flex;
@@ -60,8 +62,51 @@
   letter-spacing: 0.15rem;
 }
 
+@media (max-width: 1700px) {
+  .hcontainer {
+    width: 85%;
+  }
+}
+@media (max-width: 1500px) {
+  .hcontainer {
+    width: 95%;
+  }
+}
+@media (max-width: 1350px) {
+  .hcontainer {
+    width: 75%;
+  }
+}
+@media (max-width: 1200px) {
+  .hcontainer {
+    width: 85%;
+  }
+  .ref {
+    width: 90%;
+  }
+  .href {
+    width: 70%;
+    transition: 0.2s;
+  }
+}
+@media (max-width: 1050px) {
+  .hcontainer {
+    width: 100%;
+  }
+}
+
 @media (max-width: 992px) {
   .ref {
     width: 90%;
+  }
+  .href {
+    width: 110%;
+    transition: 0.2s;
+  }
+  .hcontainer {
+    width: 100%;
+  }
+  .hspeaking-rooms {
+    width: 100%;
   }
 }

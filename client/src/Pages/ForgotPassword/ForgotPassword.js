@@ -9,20 +9,29 @@ import Footer from "../Footer/Footer";
 function ForgotPassword() {
   const [email, setEmail] = useState("");
 
+  const emailValidate = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!emailValidate(email)) {
+      return toast.error("Please enter a valid email address.");
+    }
 
     try {
       const response = await axios.post(
         "http://localhost:8001/forgot-password",
         { email }
       );
-      console.log(response.data); // Başarılı mesajı veya başka bir işlemi burada yapabilirsiniz
-      toast.success("Your new password has been send to your e-mail address", {
+      console.log(response.data); 
+      toast.success("Your new password has been sent to your e-mail address", {
         autoClose: 2000,
       });
     } catch (error) {
-      console.log(error.response.data); // Hata mesajını ele alabilir veya başka bir işlem yapabilirsiniz
+      console.log(error.response.data); 
       toast.error("Bir hata oluştu.");
     }
   };
@@ -34,12 +43,10 @@ function ForgotPassword() {
           E-mail address:
         </label>
         <input
-          type="email"
           id="email"
           name="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          required
           className="forgot-password-input"
         />
         <br />
@@ -54,4 +61,4 @@ function ForgotPassword() {
   );
 }
 
-export default ForgotPassword;
+export default ForgotPassword;

@@ -1,0 +1,86 @@
+.chat {
+  height: 900px;
+  background-color: rgba(53, 53, 53, 0.3);
+  overflow-y: auto;
+  position: relative;
+  display: flex;
+  border-radius: 15px;
+  flex-direction: column; /* Ensure the container uses flexbox */
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
+}
+
+h2 {
+  text-align: center;
+  margin-top: 10px;
+}
+
+#input {
+  width: 200px;
+  height: 35px;
+  border-radius: 5px;
+  border-style: solid;
+  border-color: rgb(53, 53, 53);
+}
+
+.chat_input {
+  position: absolute; /* Set absolute positioning for the chat input */
+  bottom: 0; /* Position the chat input at the bottom */
+  left: 0; /* Align the chat input to the left */
+  width: 100%; /* Set the width of the chat input to fill the container */
+  display: flex; /* Use flexbox to align the input and button */
+  align-items: center; /* Center align the input and button vertically */
+  border-radius: 15px;
+  padding: 10px;
+}
+
+.chat_input input {
+  flex-grow: 1; /* Allow the input to grow and fill the remaining space */
+  margin-right: 10px; /* Add some spacing between the input and button */
+}
+
+.chat_message {
+  margin-bottom: 10px;
+}
+
+.chat_message-text {
+  font-weight: bold;
+}
+
+.chat_message-info {
+  font-size: 12px;
+  color: rgb(53, 53, 53);
+}
+
+.chat_message-sender {
+  margin-right: 10px;
+}
+
+.chat_message-time {
+  margin-left: 10px;
+}
+
+.chat_messages {
+  margin-bottom: 60px; /* Add margin to create space for the input field */
+  overflow-y: auto;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Change the justification to flex-start */
+  align-items: flex-start; /* Align the messages to the start */
+}
+.chat_message-self {
+  align-self: flex-end;
+  background-color: rgb(220, 248, 198);
+  border-radius: 5px;
+  padding: 4px;
+  margin-right: 15px;
+}
+
+.chat_message-other {
+  align-self: flex-start;
+  background-color: rgb(255, 255, 255);
+  border-radius: 5px;
+  padding: 4px;
+  margin-left: 15px;
+}

@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import "./Register.css";
 import Axios from "axios";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function App() {
+function Register() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -16,7 +16,6 @@ function App() {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const passwordRegex = /^(?=.*[!@#$%^&*])[\w!@#$%^&*]{6,}$/;
-    const usernameRegex = /^[a-zA-Z0-9]{4,}$/; // Sadece harfler ve rakamlar içeren, en az 4 karakter uzunluğunda bir kullanıcı adı regex'i
 
     if (!emailRegex.test(email)) {
       toast.error("Please enter a valid email address.");
@@ -117,7 +116,7 @@ function App() {
           />
           <br />
           <br />
-          Already have an account? Log in
+          Already have an account? <Link to="/loginform">Log in</Link>
         </form>
 
         <ToastContainer />
@@ -126,4 +125,4 @@ function App() {
   );
 }
 
-export default App;
+export default Register;

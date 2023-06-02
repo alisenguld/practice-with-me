@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   config,
   useClient,
@@ -9,7 +9,9 @@ import { Grid } from "@material-ui/core";
 import Video from "./Video.js";
 import Controls from "./Controls.js";
 import "./VideoCall.css";
-import Users from "../../Components/User_list/Users.js"
+import Users from "../../Components/User_list/Users.js";
+import Background from "../../Images/colors.mp4";
+import Chat from "../../Components/Chat/Chat.js";
 
 export default function VideoCall(props) {
   const { setInCall } = props;
@@ -19,7 +21,7 @@ export default function VideoCall(props) {
   const { ready, tracks } = useMicrophoneAndCameraTracks();
   const { roomId } = props.Id;
   const [myBool, setMyBool] = useState(true);
-  let i = 0;
+
   const toggleBool = () => {
     setMyBool(!myBool);
   };
@@ -29,7 +31,6 @@ export default function VideoCall(props) {
       client.on("user-published", async (user, mediaType) => {
         await client.subscribe(user, mediaType);
         if (mediaType === "video") {
-          // önceki kullanıcıları alır user'den ve sonra yeni bir orada olan kullanıcıların listesini ve kendini geri döndürür.
           setUsers((prevUsers) => {
             return [...prevUsers, user];
           });
@@ -38,13 +39,12 @@ export default function VideoCall(props) {
           user.audioTrack.play();
         }
       });
-      i++;
+
       client.on("user-unpublished", (user, mediaType) => {
         if (mediaType === "audio") {
-          if (user.audioTrack) user.audioTrack.stop(); // kapalı değilse kapatmasını sağlıyor
+          if (user.audioTrack) user.audioTrack.stop();
         }
         if (mediaType === "video") {
-          // Eğer kullanıcı ekranı kapattıysa otomatikman görüntüden çıkar.
           setUsers((prevUsers) => {
             return prevUsers.filter((User) => User.uid !== user.uid);
           });
@@ -74,23 +74,47 @@ export default function VideoCall(props) {
         console.log(error);
       }
     }
-  }, [channelName[roomId], client, ready, tracks]); //Herhangibiri değişti zaman bu fonksiyonu çalıştır.
+  }, [channelName[roomId], client, ready, tracks]);
 
   return (
-    <div className="videocall">
-      <div className="userlist">
-        <Users tracks={tracks} users={users} roomId={roomId} client={client} channelName={channelName[roomId]} />
+    <div
+      className="videocall"
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        flexWrap: "wrap",
+      }}
+    >
+      <video src={Background} autoPlay muted loop />
+
+      <div className="userlist" style={{ width: "15%" }}>
+        <Users
+          tracks={tracks}
+          users={users}
+          roomId={roomId}
+          client={client}
+          channelName={channelName[roomId]}
+        />
       </div>
-      <div className="video_track">
+
+      <div className="video_track" style={{ width: "60%" }}>
         <Grid container direction="column" style={{ height: "850px" }}>
           <div className="user_video">
-            <Grid item style={{ width: "100%" }}>
-              {start && tracks && <Video tracks={tracks} users={users} myBool={myBool}/>}
+            <Grid item style={{ width: "80%" }}>
+              {start && tracks && (
+                <Video tracks={tracks} users={users} myBool={myBool} />
+              )}
             </Grid>
           </div>
         </Grid>
       </div>
-      <div className="track">
+
+      <div className="chat" style={{ width: "20%" }}>
+        <Chat />
+      </div>
+
+      <div className="track" style={{ width: "100%" }}>
         <Grid item style={{ height: "50px" }}>
           {ready && tracks && (
             <Controls

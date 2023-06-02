@@ -29,6 +29,7 @@ header {
 }
 
 .navbar {
+  padding-bottom: 60px;
   padding-top: 80px;
   width: 100%;
   height: 60px;
@@ -162,6 +163,26 @@ header {
   justify-content: center;
   align-items: center;
   display: flex;
+}
+
+.logout_btn_drop {
+  margin-left: 15px;
+  background-color: #fd704d;
+  padding: 0.5rem 0.5rem;
+  border: none;
+  outline: none;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: scale 0.2 ease;
+  width: 60px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+.logout_btn_drop:hover {
+  scale: 1.05;
 }
 
 .logout_btn:hover {

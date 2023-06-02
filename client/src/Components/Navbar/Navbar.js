@@ -30,7 +30,7 @@ const Navbar = () => {
       .get("http://localhost:8001/logout")
       .then((res) => {
         if (res.data.Status === "Success") {
-          window.location.reload(true); //Server tarafını ve sayfayı yeniler
+          window.location.href = "/"; // Anasayfaya yönlendirir
         } else {
           alert("error");
         }
@@ -86,15 +86,34 @@ const Navbar = () => {
       </div>
 
       <div className={dropdownOpen ? "dropdown_menu open" : "dropdown_menu"}>
-        <ul>
-          <CustomLink to="/">Home</CustomLink>
-          <CustomLink to="/speakingrooms">Speaking Rooms</CustomLink>
-          <CustomLink to="/about">About</CustomLink>
-          <CustomLink to="/profile" className="profile_btn">
-            <AccountCircleIcon />
-            &nbsp;Login
-          </CustomLink>
-        </ul>
+        {auth ? (
+          <ul>
+            <CustomLink to="/">Home</CustomLink>
+            <CustomLink to="/speakingrooms">Speaking Rooms</CustomLink>
+            <CustomLink to="/about">About</CustomLink>
+            <li>
+              <Link to="/profile" className="profile_btn">
+                <AccountCircleIcon />
+                &nbsp;{username}
+              </Link>
+              <button onClick={handleLogout} className="logout_btn_drop">
+                <LogoutIcon />
+                &nbsp;
+              </button>
+            </li>
+          </ul>
+        ) : (
+          <div>
+            <ul>
+              <CustomLink to="/">Home</CustomLink>
+              <CustomLink to="/speakingrooms">Speaking Rooms</CustomLink>
+              <CustomLink to="/about">About</CustomLink>
+              <CustomLink to="/loginform" className="profile_btn">
+                <AccountCircleIcon /> &nbsp;Login
+              </CustomLink>
+            </ul>
+          </div>
+        )}
       </div>
     </header>
   );
@@ -112,4 +131,4 @@ function CustomLink({ to, children, ...props }) {
   );
 }
 
-export default Navbar;
+export default Navbar;

@@ -8,6 +8,8 @@ import LoginForm from "./Pages/Login/LoginForm";
 import ForgotPassword from "./Pages/ForgotPassword/ForgotPassword";
 import EditProfile from "./Pages/EditProfile/EditProfile";
 import Register from "./Pages/Register/Register";
+import { BrowserRouter as Router } from "react-router-dom";
+import Chat from "./Components/Chat/Chat";
 
 import { Route, Routes, useLocation } from "react-router-dom";
 
@@ -28,6 +30,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/speakingrooms" element={<SpeakingRooms />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path={`/profile/${language}`} element={<Profile />} />
         <Route
           path={`/Room/${language}/${roomId}`}
           element={<Rooms roomId={roomId} />}
@@ -36,6 +39,7 @@ function App() {
         <Route path="/EditProfile" element={<EditProfile />} />
         <Route path="/ForgotPassword" element={<ForgotPassword />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/Room/:language/:id" element={<Chat />} />
       </Routes>
     </div>
   );
