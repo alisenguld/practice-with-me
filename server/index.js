@@ -12,10 +12,11 @@ const http = require("http");
 const socketIo = require("socket.io");
 
 const app = express();
+
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "*", // Tüm origin'lerden gelen isteklere izin ver
+    origin: "*",
     methods: ["GET", "POST"],
   },
 });
@@ -47,8 +48,8 @@ app.use(
 const con = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "x",
-  database: "proje",
+  password: "H*J^sGc67&@HXnx@s2",
+  database: "deneme",
 });
 
 const verifyUser = (req, res, next) => {
@@ -253,6 +254,23 @@ app.get("/", verifyUser, (req, res) => {
   return res.json({ Status: "Success", username: req.username });
 });
 
+app.get("/admin", verifyUser, (req, res) => {
+  const username = req.username;
+  const query = `SELECT * FROM users WHERE username = '${username}' AND admin = 1`;
+
+  con.query(query, (error, results) => {
+    if (error) {
+      return res.status(500).json({ error: "Sunucu hatası" });
+    }
+
+    if (results.length > 0) {
+      return res.json({ Status: "Success" });
+    } else {
+      return res.json({ Status: "Fail" });
+    }
+  });
+});
+
 app.post("/speaking_room", (req, res) => {
   const sqlName = "SELECT username FROM rooms where idrooms = ?";
   let userCount = 0;
@@ -272,20 +290,37 @@ app.post("/speaking_room", (req, res) => {
 });
 
 app.post("/speaking_room_user", verifyUser, (req, res) => {
+  const isBannedQuery =
+    "SELECT COUNT(*) AS bannedCount FROM banned WHERE idrooms = ? AND username = ?";
   const isExist =
     "SELECT idrooms FROM rooms where idrooms = ? AND username = ?";
   const sql = "INSERT INTO rooms (idrooms, username) VALUES (?, ?)";
 
-  con.query(isExist, [req.body.roomId, req.username], (err, data) => {
-    if (err) return res.json({ Message: "Server Side Error" });
-    if (data.length < 1) {
-      con.query(sql, [req.body.roomId, req.username], (err, data) => {
+  con.query(
+    isBannedQuery,
+    [req.body.roomId, req.username],
+    (err, bannedData) => {
+      if (err) return res.json({ Message: "Server Side Error" });
+
+      const { bannedCount } = bannedData[0];
+
+      if (bannedCount > 0) {
+        return res.json({ Status: "Error", Message: "User is banned" });
+      }
+
+      con.query(isExist, [req.body.roomId, req.username], (err, data) => {
         if (err) return res.json({ Message: "Server Side Error" });
-        return res.json({ Status: "Success" });
+        if (data.length < 1) {
+          con.query(sql, [req.body.roomId, req.username], (err, data) => {
+            if (err) return res.json({ Message: "Server Side Error" });
+            return res.json({ Status: "Success" });
+          });
+        }
       });
     }
-  });
+  );
 });
+
 app.post("/speaking_room_user_photo", verifyUser, (req, res) => {
   let username = req.body.username;
 
@@ -307,6 +342,171 @@ app.post("/speaking_room_user_photo", verifyUser, (req, res) => {
           res.send(profileData);
         }
       }
+    }
+  );
+});
+
+app.post("/speaking_room_ban", (req, res) => {
+  const { roomId, username } = req.body;
+
+  // Kullanıcının "rooms" tablosundan silinmesi
+  const deleteSql = "DELETE FROM rooms WHERE idrooms = ? AND username = ?";
+  con.query(deleteSql, [roomId, username], (deleteErr, deleteResult) => {
+    if (deleteErr) {
+      console.error(deleteErr);
+      return res.status(500).json({ message: "Ban process failed" });
+    }
+
+    // "banned" tablosuna kullanıcının eklenmesi
+    const insertSql =
+      "INSERT INTO banned (idrooms, username, is_banned) VALUES (?, ?, 1)";
+    con.query(insertSql, [roomId, username], (insertErr, insertResult) => {
+      if (insertErr) {
+        console.error(insertErr);
+        return res.status(500).json({ message: "Ban process failed" });
+      }
+
+      return res.status(200).json({ message: "User banned successfully" });
+    });
+  });
+});
+
+app.post("/speaking_room_user_isbanned", verifyUser, (req, res) => {
+  const isExist =
+    "SELECT * FROM banned WHERE idrooms = ? AND username = ? AND is_banned = ?";
+  con.query(isExist, [req.body.roomId, req.username, 1], (err, data) => {
+    if (err) return res.json({ Message: "Server Side Error" });
+    if (data.length > 0) {
+      if (err) return res.json({ Message: "Server Side Error" });
+      return res.json({ Status: "Success" });
+    } else {
+    }
+  });
+});
+
+app.post("/speaking_room_userlist_isbanned", verifyUser, (req, res) => {
+  const isExist =
+    "SELECT * FROM banned WHERE idrooms = ? AND username = ? AND is_banned = ?";
+  con.query(isExist, [req.body.roomId, req.body.username, 1], (err, data) => {
+    if (err) return res.json({ Message: "Server Side Error" });
+    if (data.length > 0) {
+      if (err) return res.json({ Message: "Server Side Error" });
+      return res.json({ Status: "Success" });
+    } else {
+    }
+  });
+});
+
+app.post("/speaking_room_user_vote", verifyUser, (req, res) => {
+  const selectSql = "SELECT vote FROM rooms WHERE username = ? AND idrooms = ?";
+  const updateSql =
+    "UPDATE rooms SET vote = ? WHERE username = ? AND idrooms = ?";
+
+  // Get the current vote count from the database
+  con.query(selectSql, [req.body.username, req.body.roomId], (err, results) => {
+    if (err) {
+      console.log(err);
+      return res.json({ Message: "Server Side Error" });
+    }
+
+    if (results.length === 0) {
+      return res.json({ Message: "Room not found for the user" });
+    }
+
+    const currentVote = results[0].vote;
+    const updatedVote = currentVote + 1;
+    console.log(results);
+
+    // Update the vote count in the database
+    con.query(
+      updateSql,
+      [updatedVote, req.body.username, req.body.roomId],
+      (err, results) => {
+        if (err) {
+          console.log(err);
+          return res.json({ Message: "Server Side Error" });
+        }
+
+        if (results.affectedRows > 0) {
+          return res.json({ Status: "Success", voteCount: updatedVote });
+        } else {
+          return res.json({ Status: "NoRowsAffected" });
+        }
+      }
+    );
+  });
+});
+
+app.post("/speaking_room_delete_vote", (req, res) => {
+  con.query(
+    "SELECT vote FROM rooms WHERE idrooms = ? AND username = ?",
+    [req.body.roomId, req.body.username],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Internal server error" });
+      }
+
+      if (result.length === 0) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      const currentVote = result[0].vote;
+
+      if (currentVote === 0) {
+        return res.status(400).json({ message: "Vote count is already zero" });
+      }
+
+      // Decrement the vote count and update the table
+      const updatedVote = currentVote - 1;
+      con.query(
+        "UPDATE rooms SET vote = ? WHERE idrooms = ? AND username = ?",
+        [updatedVote, req.body.roomId, req.body.username],
+        (err) => {
+          if (err) {
+            console.error(err);
+            return res.status(500).json({ message: "Internal server error" });
+          }
+
+          // Retrieve the updated user list
+          con.query(
+            "SELECT * FROM rooms WHERE idrooms = ?",
+            [roomId],
+            (err, result) => {
+              if (err) {
+                console.error(err);
+                return res
+                  .status(500)
+                  .json({ message: "Internal server error" });
+              }
+
+              res.status(200).json({ userList: result });
+            }
+          );
+        }
+      );
+    }
+  );
+});
+
+app.post("/speaking_room_vote_control", (req, res) => {
+  const { roomId, reportedUsers } = req.body;
+
+  con.query(
+    "SELECT vote FROM rooms WHERE idrooms = ? AND username = ?",
+    [roomId, reportedUsers],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Internal server error" });
+      }
+
+      if (result.length === 0) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const voteCount = result[0].vote;
+
+      res.status(200).json({ voteCount: voteCount });
     }
   );
 });
@@ -365,11 +565,6 @@ app.post("/upload-profile-image", upload.single("profile"), (req, res) => {
   console.log("File saved at:", filepath);
 });
 
-app.get("/logout", (req, res) => {
-  res.clearCookie("token");
-  return res.json({ Status: "Success" });
-});
-
 io.on("connection", (socket) => {
   console.log("a user connected");
 
@@ -380,6 +575,11 @@ io.on("connection", (socket) => {
   socket.on("chat message", (msg) => {
     io.emit("chat message", msg);
   });
+});
+
+app.get("/logout", (req, res) => {
+  res.clearCookie("token");
+  return res.json({ Status: "Success" });
 });
 
 server.listen(8001, () => {

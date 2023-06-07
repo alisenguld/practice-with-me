@@ -12,7 +12,7 @@ import axios from "axios";
 export default function Controls(props) {
   const client = useClient();
   const { tracks, setStart, setInCall } = props;
-  const { roomId } = props;
+  const { roomId, reportedUsers } = props;
   const [trackState, setTrackState] = useState({ video: true, audio: true });
   const mute = async (type) => {
     if (type === "audio") {
@@ -45,7 +45,27 @@ export default function Controls(props) {
       })
       .catch((err) => console.log(err));
   };
+
+  const deleteVote = async () => {
+    for (let i = 0; i < reportedUsers.length; i++) {
+      axios
+        .post("http://localhost:8001/speaking_room_delete_vote", {
+          roomId: roomId,
+          reportedUsers: reportedUsers[i],
+        })
+        .then((res) => {
+          if (res.data.Status === "Success") {
+            console.log("Kullanıcının oyları silindi.");
+          } else {
+            console.log("Hata var");
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+  };
+
   const leaveChannel = async () => {
+    deleteVote();
     leaveData();
     await client.leave();
     client.removeAllListeners();
@@ -59,7 +79,7 @@ export default function Controls(props) {
   useEffect(() => {
     const handleBeforeUnload = (event) => {
       event.preventDefault();
-      event.returnValue = ""; // Bazı tarayıcılarda gereklidir.
+      event.returnValue = "";
       leaveChannel();
     };
 

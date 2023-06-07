@@ -22,7 +22,6 @@ header a:hover {
   color: #000000;
 }
 
-/* HEADER */
 header {
   position: relative;
   padding: 0 2rem;
@@ -89,7 +88,6 @@ header {
   scale: 1.05;
 }
 
-/* DROPDOWN MENU */
 .dropdown_menu {
   display: none;
   position: absolute;

@@ -1,5 +1,4 @@
 import "./home.css";
-import Card from "../../Components/Card/Card";
 import Footer from "../../Components/Footer/Footer";
 import Background from "../../Images/background.mp4";
 import ref from "../../Images/ref1.png";
@@ -18,7 +17,7 @@ const Home = () => {
       </div>
       <div className="hcontainer">
         <h3 className="hcontainer-title">Popular Speaking Rooms</h3>
-          <Popular />
+        <Popular />
       </div>
       <br />
       <Footer />

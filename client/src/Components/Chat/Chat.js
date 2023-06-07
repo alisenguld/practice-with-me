@@ -74,7 +74,7 @@ const Chat = () => {
       </div>
 
       <form className="chat_input" onSubmit={handleSubmit}>
-        <textarea
+        <input
           id="input"
           rows="3"
           placeholder="Type a message"

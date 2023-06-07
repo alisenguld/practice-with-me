@@ -17,7 +17,6 @@ const LoginForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Check for valid email format
     const emailFormat = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
     if (!emailFormat.test(email)) {
       toast.error("Please enter a valid email address.");
