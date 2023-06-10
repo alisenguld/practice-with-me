@@ -46,10 +46,10 @@ app.use(
 );
 
 const con = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "H*J^sGc67&@HXnx@s2",
-  database: "deneme",
+  host: " ",
+  user: " ",
+  password: " ",
+  database: " ",
 });
 
 const verifyUser = (req, res, next) => {
@@ -109,13 +109,13 @@ app.post("/forgot-password", (req, res) => {
             const transporter = nodemailer.createTransport({
               service: "gmail",
               auth: {
-                user: "imyobitirme@gmail.com",
+                user: "@gmail.com",
                 pass: "x",
               },
             });
 
             const mailOptions = {
-              from: "imyobitirme@gmail.com",
+              from: "@gmail.com",
               to: email,
               subject: "Parola Sıfırlama İsteği",
               text: "Yeni şifreniz: " + newPassword,
